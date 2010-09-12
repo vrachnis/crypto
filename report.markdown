@@ -1,1 +1,127 @@
-# CRYPTOGRAPHY TEAM PROJECT #
+#==========================================================
+"Σχετικά με την ομαδική εργασία, θα παραδώσετε μια αναφορά. Η αναφορά *ΔΕΝ* πρέπει να είναι μετάφραση, αλλά θα πρέπει να
+φανερώνει ότι δουλέψατε πάνω στην εργασία που είχατε και προσπαθήσατε να την καταλάβετε. Σας συνιστώ να μην περιοριστείτε μόνο
+στο paper που θα πάρετε, αλλά να εξετάσετε και παρεμφερείς εργασίες (συνήθως αυτές αναφέρονται στην Εισαγωγή ή στα Συμπεράσματα)
+για τις οποίες καλό είναι να γράψετε κάποια στοιχεία (π.χ., αν η εργασία που έχετε αναλάβει βελτιώνει μια προγενέστερη, δώστε σε
+μια - δύο παραγράφους τα βασικότερα σημεία της προγενέστερης εργασίας)."
+#==========================================================
+
+How to obtain full privacy in auctions
+Source: International Journal of Information Security archive
+Author:	Felix Brandt - Computer Science Department, University of Munich, Oettingenstr 67, 80538, Munich, Germany
+
+# 0 Abstract 
+Privacy has become a factor of increasing impor- tance in auction design. We propose general techniques for cryptographic
+first-price and (M + 1)st-price auction pro- tocols that only yield the winners’ identities and the sell- ing price. Moreover, if
+desired, losing bidders learn no in- formation at all, except that they lost. Our security model is merely based on computational
+intractability. In particu- lar, our approach does not rely on trusted third parties, e.g., auctioneers. We present an efficient
+implementation of the proposed techniques based on El Gamal encryption whose security only relies on the intractability of the
+decisional Diffie–Hellman problem. The resulting protocols require just three rounds of bidder broadcasting in the random oracle
+model. Communication complexity is linear in the number of possible bids.
+
+Το θέμα με το οποίο καταπιάνεται το paper που καλούμαστε να σχολιάσουμε είναι η ασφάλεια δημοπρασιών. Αναγνωρίζοντας την
+αυξανόμενη σημασία της ιδιωτικότητας των συναλλαγών στο σχεδιασμό δημοπρασιών, προτείνονται τεχνικές και πρωτόκολλα δημοπρασιών
+που αποκαλύπτουν μόνο την ταυτότητα των "νικητών" και την τιμή πώλησης. Επιπλέον, αν είναι επιθυμητό, δεν παρέχεται καμία
+επιπλέον πληροφορία στους "χαμένους" πλειοδότες πέραν της ήττας τους.
+
+Παρουσιάζεται επίσης και μια υλοποίηση των προτεινόμενων τεχνικών βασιζόμενη σύστημα κρυπτογράφησης El Gamal.
+
+# 1 Introduction
+Auctions have become the major phenomenon of electronic commerce during the last years. They are not only widespread mechanisms
+to sell goods, but have also been shown applicable to task assignment, scheduling, or finding the shortest path in a network with
+selfish nodes. In recent times, the need for privacy has been a factor of increasing importance in auction design and various
+schemes to ensure the safe conduction of sealed-bid auctions have been proposed. The cryptographic protocols presented in this
+paper differ from existing work in that they do not require trusted third parties. They are merely based on computational in-
+tractability. Privacy is preserved to a maximal extent with- out compromising much of the round-efficiency that distin- guishes
+sealed-bid auctions.
+
+Τα τελευταία χρόνια, οι δημοπρασίες έχουν εξελιχθεί σε βασικό άξονα του ηλεκτρονικού εμπορίου. Δεν αποτελούν μόνο μηχανισμούς
+για την πώληση αγαθών αλλά έχουν εφαρμογή και σε φαινομενικά άσχετους τομείς όπως η ανάθεση έργων, ο προγραμματισμός
+δραστηριοτήτων ή ακόμα και η εύρεση του συντομότερου μονοπατιού σε ένα δίκτυο. Ταυτόχρονα όμως, η ανάγκη για ύπαρξη
+ιδιωτικότητας στις δημοπρασίες έχει εξελιχθεί σε παράγοντα μείζονος σημασίας. Τα κρυπτογραφικά πρωτόκολλα που παρουσιάζονται
+στο paper διαφέρουν από προηγούμενες έρευνες που έχουν γίνει πάνω στο θέμα στο γεγονός ότι δεν απαιτούν αξιόπιστους τρίτους
+(trusted third-parties). Βασίζονται μονάχα σε υπολογιστική δυσκολία εντοπισμού (computational intractability). Η ιδιωτικότητα
+εξασφαλίζεται στο μέγιστο βαθμό χωρίς να γίνεται συμβιβασμός στην αποδοτικότητα των γύρων.
+
+Το σκηνικό μας αποτελείται από έναν πωλητή και ν πλειοδότες με σκοπό να καταλήξουν σε κάποια συμφωνία για την πώληση ενός
+αγαθού. Μιλάμε πάντα για κλειστές δημοπρασίες (sealed-bid auctions) που σημαίνει ότι ο κάθε πλειοδότης γνωρίζει μόνο τη δική του
+προσφορά και καμία άλλη.
+
+Υπάρχουν δύο βασικοί μηχανισμοί που οδηγούν σε συμφωνία:
+- first-price auction
+- second-price auction (Vickrey auction)
+
+Και στους δύο παραπάνω μηχανισμούς ο κάθε πλειοδότης υποβάλλει μια κρυφή προσφορά στον δημοπράτη δηλώνοντας το ποσό που είναι
+διατεθειμένος να πληρώσει. Ο δημοπράτης ορίζει ως νικητή τον πλειοδότη με την υψηλότερη προσφορά. Στην first-price δημοπρασία,
+ο νικητής πληρώνει το ποσό που προσέφερε ο ίδιος ενώ στις δημοπρασίες Vickrey καλείται να πληρώσει το ποσό της δεύτερης
+μεγαλύτερης προσφοράς.
+
+Και οι δύο μηχανισμοί έχουν δυνατά και αδύνατα σημεία. Για παράδειγμα, η first-price δημοπρασία έχει καλύτερα έσοδα όταν οι
+πλειοδότες είναι περισσότερο συντηρητικοί ενώ οι δημοπρασίες second-price είναι strategyproof (όρος από τη θεωρία παιγνίων)
+που σημαίνει ότι είναι πάντα προτιμότερο για τους πλειοδότες να προσφέρουν με βάση την πραγματική τους εκτίμηση για την αξία
+του προς πώλησην αγαθού. Οι ανεπιθύμητες ενέργειες του πλεονεκτήματος αυτού συνεισφέρουν στο γεγονόε οτι οι δημοπρασίες
+Vickrey έχουν μικρή πρακτική εφαρμογή για τους εξής λόγους: 
+
+- Οι πλειοδότες είναι απρόθυμοι να αποκαλύψουν την πραγματική τους εκτίμηση στον πλειοδότη. 
+- Οι πλειοδότες αμφισβητούν την ακρίβεια της δημοπρασίας αφού δεν πληρώνουν το ποσό που προσέφεραν.
+
+Τα πρωτόκολλα που εισάγει το paper αφορούν first-price και (M+1)st-price δημοπρασίες.
+
+# Δομή του paper 
+
+The remainder of this paper is structured as follows. In Sect. 2, we describe the general security model underlying this work.
+Recent related research on cryptographic auc- tion protocols is reviewed and compared to our approach in Sect. 3. In Sect. 4,
+we give a detailed description of the con- cepts to be used in the concrete implementation presented in Sect. 5. Section 6
+contains an analysis of the security and efficiency of the proposed protocols. The paper concludes with a brief overview of the
+results in Sect. 7.
+
+Η δομή του paper έχει ως εξής. Αρχικά, περιγράφει το υποκείμενο γενικό μοντέλο ασφαλείας. Ακολουθεί μια αναφορά σε σχετικές
+προηγούμενες έρευνες πάνω σε πρωτόκολλα δημοπρασιών και σύγκριση με την προτεινόμενη προσέγγιση. Το επόμενο κομμάτι περιέχει
+μια αναλυτική περιγραφή των εννοιών που χρησιμοποιούνται στην υλοποίηση που ακολουθεί. Έπεται μια ανάλυση πάνω στην ασφάλεια
+και την αποδοτικότητα των προτεινόμενων πρωτοκόλλων. Στο τέλος, ο συντάκτης του paper κάνει μια σύντομη ανασκόπηση των
+αποτελεσμάτων.
+
+# 2 Security Model
+
+Πρωταρχικός στόχος του ερευνητή είναι ιδιωτικότητα στις δημοπρασίες που δεν μπορεί να παραβιαστεί από κανένα συνασπισμό τρίτων
+προσώπων ή πλειοδοτών. Για το λόγο αυτό, συνηγορεί σε ένα μοντέλο ασφαλείας στο οποίο οι πλειοδότες λογαριάζουν από κοινού την
+έκβαση της δημοπρασίας με τέτοιο τρόπο ώστε κανένα υποσύνολο τους να μην μπορεί να αποκαλύψει ιδιωτικές πληροφορίες.
+
+# 3 Related Work
+
+Το ενδιαφέρον σε κρυπτογραφικά πρωτόκολλα για δημοπρασίες έχει αυξηθεί δραματικά. Έχουν προταθεί διάφορα ασφαλή μοντέλα για
+διεξαγωγή δημοπρασιών σφραγισμένης προσφοράς (sealed-bid auctions). Ένα κοινό στοιχείο που μοιράζονται όλα τα υπάρχοντα
+πρωτόκολλα είναι ότι η ιδιωτικότητα λαμβάνεται κατανέμοντας τον υπολογισμό της έκβασης της δημοπρασίας σε μια ομάδα τρίτων.
+
+Υπάρχουν συμμετρικά πρωτόκολλα, όπου υπάρχουν πολλοί δημοπράτες που αποφασίζουν από κοινού την έκβαση χρησιμοποιώντας
+threshold MPC, και συμμετρικά πρωτόκολλα, τα οποία εισάγουν μια επιπλέον αρχή στη δημοπρασίας (auction issuer or auction
+authority).
+
+## 3.1 Cryptographic auction protocols
+## 3.2 Bidder-resolved auctions
+
+
+# 4. Protocol description
+
+Σε αυτό το τμήμα, θα παρουσιάσουμε το πρωτόκολλο που προτείνει ο συντάκτης του paper.
+
+## 4.1 First-price auctions
+
+## 4.2 (M+1)st-price auctions
+
+
+# 5. Protocol implementation
+
+## 5.1 El Gamal encryption
+## 5.2 Zero-knowledge proofs
+
+
+
+# Συμπεράσματα
+
+Ο συντάκτης του paper παρουσίασε κρυπτογραφικά πρωτόκολλα σταθετού αριθμού γύρων για διάφορους τύπους δημοπρασιών κλειστής
+προσφοράς (sealed-bid auctions). Η ασφάλεια των προτεινόμενων προτοκόλλων βασίζεται στην υπολογιστική δυσκολία εντοπισμού.
+
+
+
+
