@@ -11,14 +11,6 @@ Source: International Journal of Information Security archive
 Author:	Felix Brandt - Computer Science Department, University of Munich, Oettingenstr 67, 80538, Munich, Germany
 
 # 0 Abstract 
-Privacy has become a factor of increasing impor- tance in auction design. We propose general techniques for cryptographic
-first-price and (M + 1)st-price auction pro- tocols that only yield the winners’ identities and the sell- ing price. Moreover, if
-desired, losing bidders learn no in- formation at all, except that they lost. Our security model is merely based on computational
-intractability. In particu- lar, our approach does not rely on trusted third parties, e.g., auctioneers. We present an efficient
-implementation of the proposed techniques based on El Gamal encryption whose security only relies on the intractability of the
-decisional Diffie–Hellman problem. The resulting protocols require just three rounds of bidder broadcasting in the random oracle
-model. Communication complexity is linear in the number of possible bids.
-
 Το θέμα με το οποίο καταπιάνεται το paper που καλούμαστε να σχολιάσουμε είναι η ασφάλεια δημοπρασιών. Αναγνωρίζοντας την
 αυξανόμενη σημασία της ιδιωτικότητας των συναλλαγών στο σχεδιασμό δημοπρασιών, προτείνονται τεχνικές και πρωτόκολλα δημοπρασιών
 που αποκαλύπτουν μόνο την ταυτότητα των "νικητών" και την τιμή πώλησης. Επιπλέον, αν είναι επιθυμητό, δεν παρέχεται καμία
@@ -27,14 +19,6 @@ model. Communication complexity is linear in the number of possible bids.
 Παρουσιάζεται επίσης και μια υλοποίηση των προτεινόμενων τεχνικών βασιζόμενη σύστημα κρυπτογράφησης El Gamal.
 
 # 1 Introduction
-Auctions have become the major phenomenon of electronic commerce during the last years. They are not only widespread mechanisms
-to sell goods, but have also been shown applicable to task assignment, scheduling, or finding the shortest path in a network with
-selfish nodes. In recent times, the need for privacy has been a factor of increasing importance in auction design and various
-schemes to ensure the safe conduction of sealed-bid auctions have been proposed. The cryptographic protocols presented in this
-paper differ from existing work in that they do not require trusted third parties. They are merely based on computational in-
-tractability. Privacy is preserved to a maximal extent with- out compromising much of the round-efficiency that distin- guishes
-sealed-bid auctions.
-
 Τα τελευταία χρόνια, οι δημοπρασίες έχουν εξελιχθεί σε βασικό άξονα του ηλεκτρονικού εμπορίου. Δεν αποτελούν μόνο μηχανισμούς
 για την πώληση αγαθών αλλά έχουν εφαρμογή και σε φαινομενικά άσχετους τομείς όπως η ανάθεση έργων, ο προγραμματισμός
 δραστηριοτήτων ή ακόμα και η εύρεση του συντομότερου μονοπατιού σε ένα δίκτυο. Ταυτόχρονα όμως, η ανάγκη για ύπαρξη
@@ -68,12 +52,6 @@ Vickrey έχουν μικρή πρακτική εφαρμογή για τους 
 Τα πρωτόκολλα που εισάγει το paper αφορούν first-price και (M+1)st-price δημοπρασίες.
 
 # Δομή του paper 
-
-The remainder of this paper is structured as follows. In Sect. 2, we describe the general security model underlying this work.
-Recent related research on cryptographic auc- tion protocols is reviewed and compared to our approach in Sect. 3. In Sect. 4,
-we give a detailed description of the con- cepts to be used in the concrete implementation presented in Sect. 5. Section 6
-contains an analysis of the security and efficiency of the proposed protocols. The paper concludes with a brief overview of the
-results in Sect. 7.
 
 Η δομή του paper έχει ως εξής. Αρχικά, περιγράφει το υποκείμενο γενικό μοντέλο ασφαλείας. Ακολουθεί μια αναφορά σε σχετικές
 προηγούμενες έρευνες πάνω σε πρωτόκολλα δημοπρασιών και σύγκριση με την προτεινόμενη προσέγγιση. Το επόμενο κομμάτι περιέχει
